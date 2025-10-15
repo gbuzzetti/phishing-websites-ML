@@ -57,24 +57,37 @@ class URLFeatureExtractor:
         return -1 if '@' in self.url else 1
     
     def double_slash_redirecting(self):
-        """Feature 5: Verifica redirecionamento com barra dupla"""
-        return -1 if '//' in self.url[self.url.find('://')+3:] else 1
+        """Feature 5: Verifica redirecionamento usando '//' (posição da última ocorrência)"""
+        last_double_slash = self.url.rfind("//")
+        
+        if self.url.startswith("http://"):
+            return -1 if last_double_slash > 6 else 1
+        elif self.url.startswith("https://"):
+            return -1 if last_double_slash > 7 else 1
+        else:
+            return 1
     
     def prefix_suffix(self):
         """Feature 6: Verifica se há hífen no domínio"""
         return -1 if '-' in self.extracted.domain else 1
     
     def having_sub_domain(self):
-        """Feature 7: Conta subdomínios"""
-        sub_domains = self.extracted.subdomain.split('.')
-        num_sub_domains = len([x for x in sub_domains if x != ''])
+        """Feature 7 (corrigida): conta subdomínios conforme o paper"""
+        subdomain = self.extracted.subdomain
         
-        if num_sub_domains == 1:
-            return 1  # Legítimo
-        elif num_sub_domains == 2:
-            return 0   # Suspeito
+        if subdomain.startswith("www."):
+            subdomain = subdomain[4:]
+        elif subdomain == "www":
+            subdomain = ""
+        
+        num_dots = subdomain.count('.')
+        
+        if num_dots == 0:
+            return 1   
+        elif num_dots == 1:
+            return 0   
         else:
-            return -1   # Phishing
+            return -1
     
     def ssl_final_state(self):
         """Feature 8: Verifica estado do certificado SSL"""
