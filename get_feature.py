@@ -381,8 +381,44 @@ class URLFeatureExtractor:
     
     def extract_all_features(self):
         """Extrai todas as features"""
-        methods = [method for method in dir(self) if not method.startswith('_') and method not in ['url', 'parsed_url', 'extracted', 'domain', 'features', 'headers', 'response', 'soup', 'extract_all_features']]
+        methods = [
+            'having_ip_address',
+            'url_length',
+            'shortening_service',
+            'having_at_symbol',
+            'double_slash_redirecting',
+            'prefix_suffix',
+            'having_sub_domain',
+            'ssl_final_state',
+            'domain_registration_length',
+            'favicon',
+            'port',
+            'https_token',
+            'request_url',
+            'url_of_anchor',
+            'links_in_tags',
+            'sfh',
+            'submitting_to_email',
+            'abnormal_url',
+            'redirect',
+            'on_mouseover',
+            'right_click',
+            'popup_window',
+            'iframe',
+            'age_of_domain',
+            'dns_record',
+            'web_traffic',
+            'page_rank',
+            'google_index',
+            'links_pointing_to_page',
+            'statistical_report',
+        ]
+        #methods = [method for method in dir(self) if not method.startswith('_') and method not in ['url', 'parsed_url', 'extracted', 'domain', 'features', 'headers', 'response', 'soup', 'extract_all_features']]
+        # dir(self) lista os metodos desse arquivo em ordem alfabética, dessa forma o vetor de features tambem será criado em ordem alfabética
+        # e isso não é o que queremos
+
         
+
         for method in methods:
             try:
                 self.features[method] = getattr(self, method)()
